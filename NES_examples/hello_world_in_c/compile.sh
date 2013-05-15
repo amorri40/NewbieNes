@@ -1,0 +1,1 @@
+cl65 -l -T -L .\lib -t nes -I .\include hello_world.c -o hello_world.nes

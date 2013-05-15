@@ -1,0 +1,1 @@
+cl65 -g -t nes asm_example.s -o asm_example.nes

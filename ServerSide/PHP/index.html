@@ -1,0 +1,147 @@
+<html>
+ <head>
+  <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+  <script src="../../NesDisasm/jquery.sha1.js" type="text/javascript"></script>
+  <script src="../../NesDisasm/nesdasm.js" type="text/javascript"></script>
+  <script src="../../ModifiedNesDisasm/load_nes_file.js" type="text/javascript"></script>
+  <script src="../../ModifiedNesDisasm/check_opcode_type.js" type="text/javascript"></script>
+  <script src="../../ModifiedNesDisasm/asm_table.js" type="text/javascript"></script>
+
+  <script src="../../Naturalizer/naturalizer.js" type="text/javascript"></script>
+
+  <script src="../../EditorEffects/highlight_same_symbols_onclick.js" type="text/javascript"></script>
+
+  <title>NewbieNes</title>
+
+  <style>
+    body {
+    }
+    table.header {
+        border-collapse: collapse;
+        font-size: small;
+        font-family: 'Osaka-Mono', monospace;
+    }
+    table.header td, th {
+        border: 1px black solid;
+    }
+    table.disasm {
+        border: 1px black solid;
+	border-collapse: collapse;
+        margin: 5px;
+	padding: 5px;
+        font-family: 'Osaka-Mono', monospace;
+        font-size: small;
+        overflow: scroll;
+    }
+    table.disasm tr:hover {
+        background-color:#ddddff;
+    }
+    table.disasm td, th {
+//        border: 1px black solid;
+    }
+    table.disasm td.asm {
+        padding: 0px 10px 0px 40px;
+    }
+    table.disasm td.naturalized {
+        padding: 0px 50px 0px 0px;
+    }
+    table.disasm tr.comment {
+        background-color: gold;
+    }
+    input.comment {
+        width: 100%;
+    }
+    div.loading {
+        background-image: url("../../NesDisasm/ajax-loader.gif");
+        background-repeat: no-repeat;
+        background-position: center;
+        width: 600px;
+        height: 60px;
+        display:none;
+    }
+    h1{
+    display: none;
+    }
+
+    x {
+      color: blue;
+    }
+    y {
+      color: lightblue;
+    }
+    accumulator {
+      color: green;
+    }
+    if {
+      color: red;
+    }
+  </style>
+ </head>
+
+ <body>
+
+  <h1>NES Disassembler</h1>
+
+  select .nes file: <input type="file" id="nesfile" />
+
+  <table class="header">
+   <tr>
+    <th>Progam(PRG) page</th><td><div id="prg_page"/></td>
+    <th>Graphics/Character(CHR) page</th><td><div id="chr_page"/></td>
+    <th>Mapper</th><td><div id="mapper"/></td>
+   </tr>
+   <tr>
+    <th>INT NMI</th><td><input id="int_nmi" type="text" value="8500" /></td>
+    <th>INT RESET</th><td><input id="int_reset" type="text" value="8000" /></td>
+    <th>INT IRQ/BRK</th><td><input id="int_irq" type="text" value="8000" /></td>
+   </tr>
+   <tr>
+    <td colspan=6>
+      <button ID="bank0">Page 0</button>
+      <button ID="bank1">Page 1</button>
+      <button ID="bank2">Page 2</button>
+      <button ID="bank3">Page 3</button>
+      <button ID="bank4">Page 4</button>
+      <button ID="bank5">Page 5</button>
+      <button ID="bank6">Page 6</button>
+      <button ID="bank7">Page 7</button>
+    </td>
+   </tr>
+   <tr>
+     <td colspan=2>
+       [<a id="download" href="comment.php?" target="_blank">Comment download</a>]
+     </td>
+     <td colspan=2>
+       [Comment upload]
+       <input type="file" id="commentfile">
+     </td>
+     <td colspan=2>
+      <button onclick="$('#asmtextarea').show()">Download .s file</button>
+     </td>
+   </tr>
+  </table>
+  <div >
+      <textarea id="asmtextarea" rows="20" cols="40">.segment "HEADER"
+        
+        .byte   "NES", $1A      ; iNES header identifier
+        .byte   2               ; 2x 16KB PRG code
+        .byte   1               ; 1x  8KB CHR data
+        .byte   $01, $00        ; mapper 0, vertical mirroring
+
+;;;;;;;;;;;;;;;
+
+;;; "nes" linker config requires a STARTUP section, even if it's empty
+.segment "STARTUP"
+
+.segment "CODE"
+
+</textarea>
+      <script>$('#asmtextarea').hide()</script>
+  </div>
+  <div id="loading" class="loading"> </div>
+
+  <table id="asmtbl" class="disasm">
+  </table>
+  
+ </body>
+</html>
